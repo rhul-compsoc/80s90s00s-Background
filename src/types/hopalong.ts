@@ -53,7 +53,7 @@ export type AdvancedSettings = {
 export type MenuSettings = SimpleMenuSettings & AdvancedSettings;
 export type ToolbarSettings = {
   mouseLocked: boolean;
-  isPlaying: boolean;
+  isPlaying?: boolean;
 };
 export type Settings = MenuSettings & ToolbarSettings;
 export type OnSettingsChange<T> = (settings: Partial<T>) => unknown;
