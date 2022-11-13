@@ -32,7 +32,7 @@ const CAMERA_BOUND = 200;
 const LEVEL_DEPTH = 600;
 
 const DEF_BRIGHTNESS = 1;
-const DEF_SATURATION = 0.8;
+const DEF_SATURATION = 1;
 
 const SPRITE_SIZE = 5;
 
