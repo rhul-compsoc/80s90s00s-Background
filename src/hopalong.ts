@@ -37,16 +37,28 @@ const DEF_SATURATION = 0.8;
 const SPRITE_SIZE = 5;
 
 // Orbit parameters constraints
-const A_MIN = -30;
-const A_MAX = 30;
-const B_MIN = 0.2;
-const B_MAX = 1.8;
-const C_MIN = 5;
-const C_MAX = 17;
-const D_MIN = 0;
-const D_MAX = 10;
-const E_MIN = 0;
-const E_MAX = 12;
+const constraints = {
+  a: {
+    min: -30,
+    max: 30,
+  },
+  b: {
+    min: 0.2,
+    max: 1.8,
+  },
+  c: {
+    min: 5,
+    max: 17,
+  },
+  d: {
+    min: 0,
+    max: 10,
+  },
+  e: {
+    min: 0,
+    max: 12,
+  },
+};
 
 const DEFAULT_SPEED = 8;
 const DEFAULT_ROTATION_SPEED = 0.005;
@@ -406,12 +418,14 @@ export default class Hopalong {
   }
 
   shuffleParams() {
+    const { a, b, c, d, e } = constraints;
+
     this.orbitParams = {
-      a: A_MIN + Math.random() * (A_MAX - A_MIN),
-      b: B_MIN + Math.random() * (B_MAX - B_MIN),
-      c: C_MIN + Math.random() * (C_MAX - C_MIN),
-      d: D_MIN + Math.random() * (D_MAX - D_MIN),
-      e: E_MIN + Math.random() * (E_MAX - E_MIN),
+      a: a.min + Math.random() * (a.max - a.min),
+      b: b.min + Math.random() * (b.max - b.min),
+      c: c.min + Math.random() * (c.max - c.min),
+      d: d.min + Math.random() * (d.max - d.min),
+      e: e.min + Math.random() * (e.max - e.min),
     };
   }
 
