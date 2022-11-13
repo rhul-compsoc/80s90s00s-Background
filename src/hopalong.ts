@@ -549,7 +549,7 @@ export default class Hopalong {
     } else if (key === 'ArrowLeft' || keyUpper === 'A') {
       this.changeRotationSpeed(this.rotationSpeedDelta);
     } else if (key === 'ArrowRight' || keyUpper === 'D') {
-      this.changeRotationSpeed(this.rotationSpeedDelta);
+      this.changeRotationSpeed(-this.rotationSpeedDelta);
     } else if (keyUpper === 'R') {
       this.resetDefaults();
     } else if (keyUpper === 'L') {
