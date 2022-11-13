@@ -43,7 +43,7 @@
     "vite": "^3.2.3"
   },
   "scripts": {
-    "build": "tsc && vite build",
+    "build": "vite build",
     "develop": "vite",
     "typecheck": "tsc --noEmit",
     "deploy": "yarn build && gh-pages -d dist"
