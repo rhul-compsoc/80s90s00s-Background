@@ -26,15 +26,12 @@ import {
 } from './types/hopalong';
 import { hsvToHsl } from './util/color';
 
+import defaults from './util/defaults';
+
 const SCALE_FACTOR = 1500;
 const CAMERA_BOUND = 200;
 
 const LEVEL_DEPTH = 600;
-
-const DEF_BRIGHTNESS = 1;
-const DEF_SATURATION = 1;
-
-const SPRITE_SIZE = 5;
 
 // Orbit parameters constraints
 const constraints = {
@@ -59,14 +56,6 @@ const constraints = {
     max: 12,
   },
 };
-
-const DEFAULT_SPEED = 8;
-const DEFAULT_ROTATION_SPEED = 0.005;
-const DEFAULT_FOV = 60;
-
-export const DEFAULT_POINTS_SUBSET = 4000;
-export const DEFAULT_SUBSETS = 7;
-export const DEFAULT_LEVELS = 7;
 
 type HopalongParticleSet = ParticleSet<Geometry, PointsMaterial>;
 
@@ -104,14 +93,14 @@ export default class Hopalong {
   windowHalfX = window.innerWidth / 2;
   windowHalfY = window.innerHeight / 2;
 
-  speed = DEFAULT_SPEED;
+  speed = defaults.speed;
   speedDelta = 0.5;
-  rotationSpeed = DEFAULT_ROTATION_SPEED;
+  rotationSpeed = defaults.rotation_speed;
   rotationSpeedDelta = 0.001;
 
-  numPointsSubset = DEFAULT_POINTS_SUBSET;
-  numSubsets = DEFAULT_SUBSETS;
-  numLevels = DEFAULT_LEVELS;
+  numPointsSubset = defaults.points_subset;
+  numSubsets = defaults.subsets;
+  numLevels = defaults.levels;
 
   // Orbit data
   orbit: Orbit<number> = {
@@ -131,9 +120,9 @@ export default class Hopalong {
     autoBind(this);
 
     const { subsetCount, levelCount, pointsPerSubset } = advancedSettings;
-    this.numSubsets = subsetCount || DEFAULT_SUBSETS;
-    this.numLevels = levelCount || DEFAULT_LEVELS;
-    this.numPointsSubset = pointsPerSubset || DEFAULT_POINTS_SUBSET;
+    this.numSubsets = subsetCount || defaults.subsets;
+    this.numLevels = levelCount || defaults.levels;
+    this.numPointsSubset = pointsPerSubset || defaults.points_subset;
     this.texture = texture;
     this.stats = stats;
     this.initOrbit();
@@ -177,7 +166,7 @@ export default class Hopalong {
     this.renderer.setPixelRatio(window.devicePixelRatio || 1);
 
     this.camera = new PerspectiveCamera(
-      DEFAULT_FOV,
+      defaults.fov,
       window.innerWidth / window.innerHeight,
       1,
       3 * SCALE_FACTOR
@@ -201,14 +190,14 @@ export default class Hopalong {
         // Updating from ParticleSystem to points
         // https://github.com/mrdoob/three.js/issues/4065
         const materials = new PointsMaterial({
-          size: SPRITE_SIZE,
+          size: defaults.sprite_size,
           map: this.texture,
           blending: AdditiveBlending,
           depthTest: false,
           transparent: false,
         });
 
-        materials.color.setHSL(...hsvToHsl(this.hueValues[s], DEF_SATURATION, DEF_BRIGHTNESS));
+        materials.color.setHSL(...hsvToHsl(this.hueValues[s], defaults.saturation, defaults.brightness));
 
         const particles = new Points(geometry, materials);
         particles.position.x = 0;
@@ -239,8 +228,8 @@ export default class Hopalong {
   addEventListeners() {
     // Setup listeners
     document.addEventListener('mousemove', this.onDocumentMouseMove, false);
-    document.addEventListener('touchstart', this.onDocumentTouchStart, false);
-    document.addEventListener('touchmove', this.onDocumentTouchMove, false);
+    document.addEventListener('touchstart', this.onDocumentTouch, false);
+    document.addEventListener('touchmove', this.onDocumentTouch, false);
     document.addEventListener('keydown', this.onKeyDown, false);
     window.addEventListener('resize', this.onWindowResize, false);
   }
@@ -295,7 +284,7 @@ export default class Hopalong {
           // update the geometry and color
           particles.geometry.verticesNeedUpdate = true;
           myMaterial.color.setHSL(
-            ...hsvToHsl(this.hueValues[mySubset], DEF_SATURATION, DEF_BRIGHTNESS)
+            ...hsvToHsl(this.hueValues[mySubset], defaults.saturation, defaults.brightness)
           );
           particleSet.needsUpdate = false;
         }
@@ -441,17 +430,7 @@ export default class Hopalong {
     this.mouseY = event.clientY - this.windowHalfY;
   }
 
-  onDocumentTouchStart(event: TouchEvent) {
-    if (this.mouseLocked) {
-      return;
-    }
-    if (event.touches.length == 1) {
-      this.mouseX = event.touches[0].pageX - this.windowHalfX;
-      this.mouseY = event.touches[0].pageY - this.windowHalfY;
-    }
-  }
-
-  onDocumentTouchMove(event: TouchEvent) {
+  onDocumentTouch(event: TouchEvent) {
     if (this.mouseLocked) {
       return;
     }
@@ -532,9 +511,9 @@ export default class Hopalong {
   }
 
   resetDefaults() {
-    this.speed = DEFAULT_SPEED;
-    this.rotationSpeed = DEFAULT_ROTATION_SPEED;
-    this.camera.fov = DEFAULT_FOV;
+    this.speed = defaults.speed;
+    this.rotationSpeed = defaults.rotation_speed;
+    this.camera.fov = defaults.fov;
     this.fireSettingsChange();
   }
 
