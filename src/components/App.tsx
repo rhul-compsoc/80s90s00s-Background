@@ -28,7 +28,7 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
     window.clearTimeout(hideTimeout);
     setToolbarTimeout();
   }, 250);
-  const hideToolbar = () => updateToolbarVisible(false);
+  const hideToolbar = () => updateToolbarVisible(true);
   const setToolbarTimeout = () => {
     hideTimeout = window.setTimeout(hideToolbar, 2000);
   };
@@ -46,12 +46,13 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
       menuOpen={menuOpen}
       statsOpen={statsOpen}
       mouseLocked={mouseLocked}
-      isPlaying={isPlaying}
+      isPlaying={isPlaying || false}
       updateMenuOpen={() => updateMenuOpen(invertCurrent)}
       updateStatsOpen={() => updateStatsOpen(invertCurrent)}
       updateMouseLocked={() => onSettingsChange({ mouseLocked: !mouseLocked })}
       updateIsPlaying={() => onSettingsChange({ isPlaying: !isPlaying })}
       onCenter={onCenter}
+      rating={{ active: false, ratings: [] }}
     />
   );
   console.log(isPlaying);
