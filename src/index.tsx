@@ -2,16 +2,16 @@ import autoBind from 'auto-bind';
 import React from 'react';
 import { render } from 'react-dom';
 import 'reset.css';
-import './main.css';
+import '@/main.css';
 import { debounce, pick } from 'lodash';
 import Stats from 'stats.js';
 import { TextureLoader } from 'three';
-import App from './components/App';
-import Hopalong from './hopalong';
-import textureUrl from './images/galaxy.png';
-import { AdvancedSettings, Settings } from './types/hopalong';
-import Detector from './util/Detector';
-import defaults from './util/defaults';
+import App from '@/components/App';
+import Hopalong from '@/hopalong';
+import textureUrl from '@/images/galaxy.png';
+import { AdvancedSettings, Settings } from '@/types/hopalong';
+import Detector from '@/util/Detector';
+import defaults from '@/util/defaults';
 
 class Program {
   hopalong: Hopalong;

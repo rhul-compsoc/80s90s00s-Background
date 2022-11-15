@@ -3,7 +3,7 @@ import ReactPlayer from 'react-player/youtube';
 import { throttle } from 'lodash';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import { OnSettingsChange, Settings } from '../types/hopalong';
+import { OnSettingsChange, Settings } from '@/types/hopalong';
 import Menu from './Menu';
 import Toolbar from './Toolbar';
 import WebGLStats from './WebGLStats';

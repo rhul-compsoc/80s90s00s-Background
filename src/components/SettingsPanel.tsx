@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { UnstyledUl } from '../styles/mixins';
-import { MenuSettings } from '../types/hopalong';
+import { UnstyledUl } from '@/styles/mixins';
+import { MenuSettings } from '@/types/hopalong';
 import { Button } from './common/Button';
 import Checkbox from './common/Checkbox';
 import Dropdown from './common/Dropdown';

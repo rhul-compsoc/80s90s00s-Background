@@ -1,4 +1,3 @@
-/* eslint-disable import/no-extraneous-dependencies */
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import * as path from 'path';
@@ -14,5 +13,5 @@ export default defineConfig({
   server: {
     host: true,
   },
-  base: '/hopalong-redux/'
+  base: '/hopalong-redux/',
 });
