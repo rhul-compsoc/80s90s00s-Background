@@ -26,6 +26,13 @@ type PropsType = {
   updateStatsOpen: () => unknown;
   updateMouseLocked: () => unknown;
   updateIsPlaying: () => unknown;
+  rating: {
+    active: boolean;
+    ratings: {
+      rating: number;
+      numbers: [number, number, number];
+    }[];
+  };
 };
 export default function Toolbar({
   menuOpen,
@@ -37,6 +44,7 @@ export default function Toolbar({
   updateStatsOpen,
   updateMouseLocked,
   updateIsPlaying,
+  rating,
 }: PropsType) {
   const isFullscreen = !!document.fullscreenElement;
 
@@ -52,6 +60,13 @@ export default function Toolbar({
   return (
     <nav>
       <NavList>
+        <ListItem>
+          {[...Array(10).keys()].map((i) => (
+            <IconButton className="w-64 bg-white" key={i}>
+              {i}
+            </IconButton>
+          ))}
+        </ListItem>
         <ListItem>
           <IconButton className={classes({ active: menuOpen })} onClick={updateMenuOpen}>
             {menuOpen ? <FaTimes /> : <FaBars />}
@@ -82,6 +97,11 @@ export default function Toolbar({
             className={classes({ active: statsOpen, hide: !menuOpen })}
             onClick={updateStatsOpen}
           >
+            <FaChartArea />
+          </IconButton>
+        </ListItem>
+        <ListItem>
+          <IconButton className={classes({ active: rating.active })}>
             <FaChartArea />
           </IconButton>
         </ListItem>
