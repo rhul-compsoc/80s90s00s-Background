@@ -2,7 +2,7 @@ import React, { FunctionComponent, useState } from 'react';
 import { FaChevronRight } from 'react-icons/fa';
 import styled from 'styled-components';
 import { motion } from 'framer-motion';
-import { classes } from '../../styles/utils';
+import { classes } from '@/styles/utils';
 
 type PropsType = {
   header: string;

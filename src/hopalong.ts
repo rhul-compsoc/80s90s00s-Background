@@ -26,35 +26,36 @@ import {
 } from './types/hopalong';
 import { hsvToHsl } from './util/color';
 
+import defaults from './util/defaults';
+
 const SCALE_FACTOR = 1500;
 const CAMERA_BOUND = 200;
 
 const LEVEL_DEPTH = 600;
 
-const DEF_BRIGHTNESS = 1;
-const DEF_SATURATION = 0.8;
-
-const SPRITE_SIZE = 5;
-
 // Orbit parameters constraints
-const A_MIN = -30;
-const A_MAX = 30;
-const B_MIN = 0.2;
-const B_MAX = 1.8;
-const C_MIN = 5;
-const C_MAX = 17;
-const D_MIN = 0;
-const D_MAX = 10;
-const E_MIN = 0;
-const E_MAX = 12;
-
-const DEFAULT_SPEED = 8;
-const DEFAULT_ROTATION_SPEED = 0.005;
-const DEFAULT_FOV = 60;
-
-export const DEFAULT_POINTS_SUBSET = 4000;
-export const DEFAULT_SUBSETS = 7;
-export const DEFAULT_LEVELS = 7;
+const constraints = {
+  a: {
+    min: -30,
+    max: 30,
+  },
+  b: {
+    min: 0.2,
+    max: 1.8,
+  },
+  c: {
+    min: 5,
+    max: 17,
+  },
+  d: {
+    min: 0,
+    max: 10,
+  },
+  e: {
+    min: 0,
+    max: 12,
+  },
+};
 
 type HopalongParticleSet = ParticleSet<Geometry, PointsMaterial>;
 
@@ -92,14 +93,14 @@ export default class Hopalong {
   windowHalfX = window.innerWidth / 2;
   windowHalfY = window.innerHeight / 2;
 
-  speed = DEFAULT_SPEED;
+  speed = defaults.speed;
   speedDelta = 0.5;
-  rotationSpeed = DEFAULT_ROTATION_SPEED;
+  rotationSpeed = defaults.rotation_speed;
   rotationSpeedDelta = 0.001;
 
-  numPointsSubset = DEFAULT_POINTS_SUBSET;
-  numSubsets = DEFAULT_SUBSETS;
-  numLevels = DEFAULT_LEVELS;
+  numPointsSubset = defaults.points_subset;
+  numSubsets = defaults.subsets;
+  numLevels = defaults.levels;
 
   // Orbit data
   orbit: Orbit<number> = {
@@ -119,9 +120,9 @@ export default class Hopalong {
     autoBind(this);
 
     const { subsetCount, levelCount, pointsPerSubset } = advancedSettings;
-    this.numSubsets = subsetCount || DEFAULT_SUBSETS;
-    this.numLevels = levelCount || DEFAULT_LEVELS;
-    this.numPointsSubset = pointsPerSubset || DEFAULT_POINTS_SUBSET;
+    this.numSubsets = subsetCount || defaults.subsets;
+    this.numLevels = levelCount || defaults.levels;
+    this.numPointsSubset = pointsPerSubset || defaults.points_subset;
     this.texture = texture;
     this.stats = stats;
     this.initOrbit();
@@ -165,7 +166,7 @@ export default class Hopalong {
     this.renderer.setPixelRatio(window.devicePixelRatio || 1);
 
     this.camera = new PerspectiveCamera(
-      DEFAULT_FOV,
+      defaults.fov,
       window.innerWidth / window.innerHeight,
       1,
       3 * SCALE_FACTOR
@@ -189,14 +190,14 @@ export default class Hopalong {
         // Updating from ParticleSystem to points
         // https://github.com/mrdoob/three.js/issues/4065
         const materials = new PointsMaterial({
-          size: SPRITE_SIZE,
+          size: defaults.sprite_size,
           map: this.texture,
           blending: AdditiveBlending,
           depthTest: false,
           transparent: false,
         });
 
-        materials.color.setHSL(...hsvToHsl(this.hueValues[s], DEF_SATURATION, DEF_BRIGHTNESS));
+        materials.color.setHSL(...hsvToHsl(this.hueValues[s], defaults.saturation, defaults.brightness));
 
         const particles = new Points(geometry, materials);
         particles.position.x = 0;
@@ -227,8 +228,8 @@ export default class Hopalong {
   addEventListeners() {
     // Setup listeners
     document.addEventListener('mousemove', this.onDocumentMouseMove, false);
-    document.addEventListener('touchstart', this.onDocumentTouchStart, false);
-    document.addEventListener('touchmove', this.onDocumentTouchMove, false);
+    document.addEventListener('touchstart', this.onDocumentTouch, false);
+    document.addEventListener('touchmove', this.onDocumentTouch, false);
     document.addEventListener('keydown', this.onKeyDown, false);
     window.addEventListener('resize', this.onWindowResize, false);
   }
@@ -283,7 +284,7 @@ export default class Hopalong {
           // update the geometry and color
           particles.geometry.verticesNeedUpdate = true;
           myMaterial.color.setHSL(
-            ...hsvToHsl(this.hueValues[mySubset], DEF_SATURATION, DEF_BRIGHTNESS)
+            ...hsvToHsl(this.hueValues[mySubset], defaults.saturation, defaults.brightness)
           );
           particleSet.needsUpdate = false;
         }
@@ -406,12 +407,14 @@ export default class Hopalong {
   }
 
   shuffleParams() {
+    const { a, b, c, d, e } = constraints;
+
     this.orbitParams = {
-      a: A_MIN + Math.random() * (A_MAX - A_MIN),
-      b: B_MIN + Math.random() * (B_MAX - B_MIN),
-      c: C_MIN + Math.random() * (C_MAX - C_MIN),
-      d: D_MIN + Math.random() * (D_MAX - D_MIN),
-      e: E_MIN + Math.random() * (E_MAX - E_MIN),
+      a: a.min + Math.random() * (a.max - a.min),
+      b: b.min + Math.random() * (b.max - b.min),
+      c: c.min + Math.random() * (c.max - c.min),
+      d: d.min + Math.random() * (d.max - d.min),
+      e: e.min + Math.random() * (e.max - e.min),
     };
   }
 
@@ -427,17 +430,7 @@ export default class Hopalong {
     this.mouseY = event.clientY - this.windowHalfY;
   }
 
-  onDocumentTouchStart(event: TouchEvent) {
-    if (this.mouseLocked) {
-      return;
-    }
-    if (event.touches.length == 1) {
-      this.mouseX = event.touches[0].pageX - this.windowHalfX;
-      this.mouseY = event.touches[0].pageY - this.windowHalfY;
-    }
-  }
-
-  onDocumentTouchMove(event: TouchEvent) {
+  onDocumentTouch(event: TouchEvent) {
     if (this.mouseLocked) {
       return;
     }
@@ -518,9 +511,9 @@ export default class Hopalong {
   }
 
   resetDefaults() {
-    this.speed = DEFAULT_SPEED;
-    this.rotationSpeed = DEFAULT_ROTATION_SPEED;
-    this.camera.fov = DEFAULT_FOV;
+    this.speed = defaults.speed;
+    this.rotationSpeed = defaults.rotation_speed;
+    this.camera.fov = defaults.fov;
     this.fireSettingsChange();
   }
 
@@ -535,7 +528,7 @@ export default class Hopalong {
     } else if (key === 'ArrowLeft' || keyUpper === 'A') {
       this.changeRotationSpeed(this.rotationSpeedDelta);
     } else if (key === 'ArrowRight' || keyUpper === 'D') {
-      this.changeRotationSpeed(this.rotationSpeedDelta);
+      this.changeRotationSpeed(-this.rotationSpeedDelta);
     } else if (keyUpper === 'R') {
       this.resetDefaults();
     } else if (keyUpper === 'L') {

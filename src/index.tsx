@@ -2,25 +2,27 @@ import autoBind from 'auto-bind';
 import React from 'react';
 import { render } from 'react-dom';
 import 'reset.css';
-import './main.css';
+import '@/main.css';
 import { debounce, pick } from 'lodash';
 import Stats from 'stats.js';
 import { TextureLoader } from 'three';
-import App from './components/App';
-import Hopalong, { DEFAULT_LEVELS, DEFAULT_POINTS_SUBSET, DEFAULT_SUBSETS } from './hopalong';
-import textureUrl from './images/galaxy.png';
-import { AdvancedSettings, Settings } from './types/hopalong';
-import Detector from './util/Detector';
+import App from '@/components/App';
+import Hopalong from '@/hopalong';
+import textureUrl from '@/images/galaxy.png';
+import { AdvancedSettings, Settings } from '@/types/hopalong';
+import Detector from '@/util/Detector';
+import defaults from '@/util/defaults';
 
 class Program {
   hopalong: Hopalong;
   texture = new TextureLoader().load(textureUrl);
   stats = new Stats();
   settings: Partial<Settings> = {
-    pointsPerSubset: DEFAULT_POINTS_SUBSET,
-    levelCount: DEFAULT_LEVELS,
-    subsetCount: DEFAULT_SUBSETS,
-    isPlaying: false,
+    pointsPerSubset: defaults.points_subset,
+    levelCount: defaults.levels,
+    subsetCount: defaults.subsets,
+    isPlaying: defaults.isPlaying,
+    speed: defaults.speed,
   };
   debounceCreateHopalong = debounce(this.createHopalong, 1000);
 
@@ -94,7 +96,7 @@ class Program {
       // We need to create a new instance for advanced settings
       this.debounceCreateHopalong(newAdvancedSettings);
       // In the meantime, update settings with latest changes
-      this.renderReact(this.settings);
+      this.renderReact(this.settings as Settings);
     }
   }
 }

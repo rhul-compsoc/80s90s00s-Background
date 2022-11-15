@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { UnstyledButton } from '../styles/mixins';
-import { classes } from '../styles/utils';
+import { UnstyledButton } from '@/styles/mixins';
+import { classes } from '@/styles/utils';
 import InfoPanel from './InfoPanel';
 import SettingsPanel, { SettingsPanelProps } from './SettingsPanel';
 

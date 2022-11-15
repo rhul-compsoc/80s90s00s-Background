@@ -13,8 +13,8 @@ import {
 } from 'react-icons/fa';
 import styled from 'styled-components';
 import { IconButton } from './common/Button';
-import { classes } from '../styles/utils';
-import { useForceUpdate } from '../util/hooks';
+import { classes } from '@/styles/utils';
+import { useForceUpdate } from '@/util/hooks';
 
 type PropsType = {
   menuOpen: boolean;

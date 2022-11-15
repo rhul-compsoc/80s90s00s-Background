@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { UnstyledButton } from '../../styles/mixins';
+import { UnstyledButton } from '@/styles/mixins';
 
 export const Button = styled(UnstyledButton).attrs(({ type }) => ({
   type: type || 'button',

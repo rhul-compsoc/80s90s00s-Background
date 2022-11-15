@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { UnstyledUl } from '../styles/mixins';
+import { UnstyledUl } from '@/styles/mixins';
 import { Box } from './common/Box';
 
 export default function InfoPanel() {
