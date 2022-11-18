@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import {
   FaBars,
   FaChartArea,
@@ -15,6 +15,7 @@ import styled from 'styled-components';
 import { IconButton } from './common/Button';
 import { classes } from '@/styles/utils';
 import { useForceUpdate } from '@/util/hooks';
+import { Rating, RatingContext } from '@/components/App';
 
 type PropsType = {
   menuOpen: boolean;
@@ -26,13 +27,6 @@ type PropsType = {
   updateStatsOpen: () => unknown;
   updateMouseLocked: () => unknown;
   updateIsPlaying: () => unknown;
-  rating: {
-    active: boolean;
-    ratings: {
-      rating: number;
-      numbers: [number, number, number];
-    }[];
-  };
 };
 export default function Toolbar({
   menuOpen,
@@ -44,8 +38,9 @@ export default function Toolbar({
   updateStatsOpen,
   updateMouseLocked,
   updateIsPlaying,
-  rating,
 }: PropsType) {
+  const ratingContext = useContext(RatingContext);
+
   const isFullscreen = !!document.fullscreenElement;
 
   const forceUpdate = useForceUpdate();
@@ -57,12 +52,16 @@ export default function Toolbar({
     }
   };
 
+  const ratingGiven = (rating: number) => {
+    ratingContext.addRating(rating);
+  };
+
   return (
     <nav>
       <NavList>
         <ListItem>
           {[...Array(10).keys()].map((i) => (
-            <IconButton className="w-64 bg-white" key={i}>
+            <IconButton className="w-64 bg-white" key={i} onClick={() => ratingGiven(i)}>
               {i}
             </IconButton>
           ))}
@@ -101,7 +100,7 @@ export default function Toolbar({
           </IconButton>
         </ListItem>
         <ListItem>
-          <IconButton className={classes({ active: rating.active })}>
+          <IconButton>
             <FaChartArea />
           </IconButton>
         </ListItem>
