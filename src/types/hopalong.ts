@@ -6,6 +6,9 @@ export type OrbitParams<T> = {
   c: T;
   d: T;
   e: T;
+  choice: T;
+  xPreset: T;
+  yPreset: T;
 };
 export type Orbit<T> = {
   subsets: SubsetPoint[][];
