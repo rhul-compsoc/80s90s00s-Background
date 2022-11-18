@@ -31,6 +31,7 @@ import defaults from './util/defaults';
 const SCALE_FACTOR = 1500;
 const CAMERA_BOUND = 200;
 
+// how long the level is (in frames)
 const LEVEL_DEPTH = 600;
 
 // Orbit parameters constraints
@@ -57,7 +58,11 @@ const constraints = {
   },
 };
 
-type HopalongParticleSet = ParticleSet<Geometry, PointsMaterial>;
+type ParamsContainer = {
+  params: OrbitParams<number>;
+};
+
+type HopalongParticleSet = ParticleSet<Geometry, PointsMaterial> & ParamsContainer;
 
 type ConstructorProps = {
   advancedSettings: Partial<AdvancedSettings>;
@@ -78,9 +83,19 @@ export default class Hopalong {
     choice: 0,
     xPreset: 0,
     yPreset: 0,
+    timeCreated: Date.now(),
   };
 
   orbitParamHistory: OrbitParams<number>[] = [];
+  getCurrentOrbitParams() {
+    const latest = this.particleSets.sort((a, b) => {
+      if (!a.params.timeCreated || !b.params.timeCreated) {
+        return this.orbitParams;
+      }
+      return a.params.timeCreated < b.params.timeCreated ? 1 : -1;
+    });
+    return latest[latest.length - 1].params;
+  }
 
   texture: Texture;
   camera: PerspectiveCamera;
@@ -88,7 +103,6 @@ export default class Hopalong {
   renderer: WebGLRenderer;
   stats: Stats;
   onSettingsUpdate: (settings: SimpleSettings) => unknown;
-  onVibeChange: (vibe: OrbitParams<number>) => unknown;
 
   hueValues: number[] = [];
 
@@ -185,7 +199,10 @@ export default class Hopalong {
     this.generateOrbit();
     this.generateHues();
 
-    // Create particle systems
+    /**
+     * The way this works is that it creates all the "frames" of the "level" at the start,
+     * and then it just cycles through them. Here's where we create the frames.
+     */
     for (let k = 0; k < this.numLevels; k++) {
       for (let s = 0; s < this.numSubsets; s++) {
         const geometry = new Geometry();
@@ -219,6 +236,7 @@ export default class Hopalong {
           mySubset: s,
           needsUpdate: false,
           particles,
+          params: this.orbitParams, // Params are only here to identify the particle set for the vibe rating
         };
 
         this.scene.add(particles);
@@ -296,6 +314,7 @@ export default class Hopalong {
             ...hsvToHsl(this.hueValues[mySubset], defaults.saturation, defaults.brightness)
           );
           particleSet.needsUpdate = false;
+          particleSet.params = this.orbitParams;
         }
       }
     }
@@ -435,18 +454,8 @@ export default class Hopalong {
       choice: Math.random(),
       xPreset: Math.random(),
       yPreset: Math.random(),
+      timeCreated: Date.now(),
     };
-    this.orbitParams = {
-      a: 19.85765673889196,
-      b: 0.5072006487128553,
-      c: 5.789726266924376,
-      d: 5.948762636829931,
-      e: 8.794109710748486,
-      choice: 0.9196443226540914,
-      xPreset: 0.9291714162313449,
-      yPreset: 0.29732188758703637,
-    };
-
     this.orbitParamHistory.push(this.orbitParams);
   }
 
