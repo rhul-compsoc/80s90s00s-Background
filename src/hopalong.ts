@@ -65,7 +65,6 @@ type ConstructorProps = {
   texture: Texture;
   stats: Stats;
   onSettingsUpdate: (settings: Settings) => unknown;
-  onVibeChange: (vibe: OrbitParams<number>) => unknown;
 };
 
 export default class Hopalong {
@@ -80,6 +79,8 @@ export default class Hopalong {
     xPreset: 0,
     yPreset: 0,
   };
+
+  orbitParamHistory: OrbitParams<number>[] = [];
 
   texture: Texture;
   camera: PerspectiveCamera;
@@ -121,14 +122,7 @@ export default class Hopalong {
   updateIntervalKey: number;
   destroyed = false;
 
-  constructor({
-    advancedSettings,
-    canvas,
-    texture,
-    stats,
-    onSettingsUpdate,
-    onVibeChange,
-  }: ConstructorProps) {
+  constructor({ advancedSettings, canvas, texture, stats, onSettingsUpdate }: ConstructorProps) {
     autoBind(this);
 
     const { subsetCount, levelCount, pointsPerSubset } = advancedSettings;
@@ -137,7 +131,6 @@ export default class Hopalong {
     this.numPointsSubset = pointsPerSubset || defaults.points_subset;
     this.texture = texture;
     this.stats = stats;
-    this.onVibeChange = onVibeChange;
     this.initOrbit();
     this.init(canvas);
     this.animate();
@@ -237,6 +230,7 @@ export default class Hopalong {
     this.onWindowResize();
 
     // Schedule orbit regeneration
+    // TODO: maybe make this a little more sophisticated
     this.updateIntervalKey = window.setInterval(this.updateOrbit, 3000);
   }
 
@@ -329,7 +323,7 @@ export default class Hopalong {
 
   generateOrbit() {
     let x, y, z, x1;
-
+    console.log('generating orbit', Math.random());
     this.prepareOrbit();
 
     const { a, b, c, d, e, choice, xPreset, yPreset } = this.orbitParams;
@@ -423,17 +417,6 @@ export default class Hopalong {
   shuffleParams() {
     const { a, b, c, d, e } = constraints;
     this.orbitParams = {
-      a: a.min + Math.random() * (a.max - a.min),
-      b: b.min + Math.random() * (b.max - b.min),
-      c: c.min + Math.random() * (c.max - c.min),
-      d: d.min + Math.random() * (d.max - d.min),
-      e: e.min + Math.random() * (e.max - e.min),
-      choice: Math.random(),
-      xPreset: Math.random(),
-      yPreset: Math.random(),
-    };
-
-    this.orbitParams = {
       a: -7.423649218839337,
       b: 0.7838712995833943,
       c: 6.5829663549683595,
@@ -443,8 +426,28 @@ export default class Hopalong {
       xPreset: 0.3305241563671446,
       yPreset: 0.36372397148440827,
     };
+    this.orbitParams = {
+      a: a.min + Math.random() * (a.max - a.min),
+      b: b.min + Math.random() * (b.max - b.min),
+      c: c.min + Math.random() * (c.max - c.min),
+      d: d.min + Math.random() * (d.max - d.min),
+      e: e.min + Math.random() * (e.max - e.min),
+      choice: Math.random(),
+      xPreset: Math.random(),
+      yPreset: Math.random(),
+    };
+    this.orbitParams = {
+      a: 19.85765673889196,
+      b: 0.5072006487128553,
+      c: 5.789726266924376,
+      d: 5.948762636829931,
+      e: 8.794109710748486,
+      choice: 0.9196443226540914,
+      xPreset: 0.9291714162313449,
+      yPreset: 0.29732188758703637,
+    };
 
-    this.onVibeChange(this.orbitParams);
+    this.orbitParamHistory.push(this.orbitParams);
   }
 
   ///////////////////////////////////////////////
