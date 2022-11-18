@@ -14,9 +14,8 @@ export type Rating = {
 };
 
 export const RatingContext = createContext({
-  ratings: [] as Rating[],
   // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
-  setRatings: (ratings: Rating[]) => {},
+  addRating: (rating: number) => {},
 });
 
 type PropsType = {
@@ -52,6 +51,19 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
     setToolbarTimeout();
   });
 
+  useEffect(() => {
+    console.log(ratings);
+  }, [ratings]);
+
+  const addRating = (rating: number) => {
+    const newRatings = ratings;
+    newRatings.push({
+      rating: rating,
+      numbers: [0, 0, 0],
+    } as Rating);
+    setRatings(newRatings);
+  };
+
   const { mouseLocked, isPlaying, ...menuSettings } = settings;
 
   const toolbar = (
@@ -67,10 +79,9 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
       onCenter={onCenter}
     />
   );
-  console.log(isPlaying);
 
   return (
-    <RatingContext.Provider value={{ ratings, setRatings }}>
+    <RatingContext.Provider value={{ addRating }}>
       <PlayerWrap>
         <ReactPlayer url="https://www.youtube.com/watch?v=tKi9Z-f6qX4" playing={isPlaying} />
       </PlayerWrap>
