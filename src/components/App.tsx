@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import ReactPlayer from 'react-player/youtube';
 import { throttle } from 'lodash';
 import { motion } from 'framer-motion';
@@ -7,6 +7,17 @@ import { OnSettingsChange, Settings } from '@/types/hopalong';
 import Menu from './Menu';
 import Toolbar from './Toolbar';
 import WebGLStats from './WebGLStats';
+
+export type Rating = {
+  rating: number;
+  numbers: number[];
+};
+
+export const RatingContext = createContext({
+  ratings: [] as Rating[],
+  // eslint-disable-next-line @typescript-eslint/no-empty-function, @typescript-eslint/no-unused-vars
+  setRatings: (ratings: Rating[]) => {},
+});
 
 type PropsType = {
   stats: Stats;
@@ -20,6 +31,8 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
   const [toolbarVisible, updateToolbarVisible] = useState(true);
   const [menuOpen, updateMenuOpen] = useState(false);
   const [statsOpen, updateStatsOpen] = useState(false);
+  const [ratings, setRatings] = useState<Rating[]>([]);
+
   const invertCurrent = (value) => !value;
   let hideTimeout: number;
 
@@ -52,13 +65,12 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
       updateMouseLocked={() => onSettingsChange({ mouseLocked: !mouseLocked })}
       updateIsPlaying={() => onSettingsChange({ isPlaying: !isPlaying })}
       onCenter={onCenter}
-      rating={{ active: false, ratings: [] }}
     />
   );
   console.log(isPlaying);
 
   return (
-    <>
+    <RatingContext.Provider value={{ ratings, setRatings }}>
       <PlayerWrap>
         <ReactPlayer url="https://www.youtube.com/watch?v=tKi9Z-f6qX4" playing={isPlaying} />
       </PlayerWrap>
@@ -78,7 +90,7 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
       <StatsBg open={statsOpen}>
         <WebGLStats stats={stats} />
       </StatsBg>
-    </>
+    </RatingContext.Provider>
   );
 }
 const zIndexMenu = 5;
