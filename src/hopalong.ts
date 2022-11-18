@@ -431,8 +431,19 @@ export default class Hopalong {
       choice: Math.random(),
       xPreset: Math.random(),
       yPreset: Math.random(),
-
     };
+
+    this.orbitParams = {
+      a: -7.423649218839337,
+      b: 0.7838712995833943,
+      c: 6.5829663549683595,
+      d: 0.9984510510542877,
+      e: 1.7643029661649652,
+      choice: 0.6484083756051098,
+      xPreset: 0.3305241563671446,
+      yPreset: 0.36372397148440827,
+    };
+
     this.onVibeChange(this.orbitParams);
   }
 
