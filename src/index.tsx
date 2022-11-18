@@ -8,7 +8,7 @@ import Stats from 'stats.js';
 import { TextureLoader } from 'three';
 import App from '@/components/App';
 import Hopalong from '@/hopalong';
-import textureUrl from '@/images/galaxy.png';
+import textureUrl from '@/images/amoongus.png';
 import { AdvancedSettings, Settings } from '@/types/hopalong';
 import Detector from '@/util/Detector';
 import defaults from '@/util/defaults';
