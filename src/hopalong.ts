@@ -65,6 +65,7 @@ type ConstructorProps = {
   texture: Texture;
   stats: Stats;
   onSettingsUpdate: (settings: Settings) => unknown;
+  onVibeChange: (vibe: OrbitParams<number>) => unknown;
 };
 
 export default class Hopalong {
@@ -75,6 +76,9 @@ export default class Hopalong {
     c: 0,
     d: 0,
     e: 0,
+    choice: 0,
+    xPreset: 0,
+    yPreset: 0,
   };
 
   texture: Texture;
@@ -83,6 +87,7 @@ export default class Hopalong {
   renderer: WebGLRenderer;
   stats: Stats;
   onSettingsUpdate: (settings: SimpleSettings) => unknown;
+  onVibeChange: (vibe: OrbitParams<number>) => unknown;
 
   hueValues: number[] = [];
 
@@ -116,7 +121,14 @@ export default class Hopalong {
   updateIntervalKey: number;
   destroyed = false;
 
-  constructor({ advancedSettings, canvas, texture, stats, onSettingsUpdate }: ConstructorProps) {
+  constructor({
+    advancedSettings,
+    canvas,
+    texture,
+    stats,
+    onSettingsUpdate,
+    onVibeChange,
+  }: ConstructorProps) {
     autoBind(this);
 
     const { subsetCount, levelCount, pointsPerSubset } = advancedSettings;
@@ -125,6 +137,7 @@ export default class Hopalong {
     this.numPointsSubset = pointsPerSubset || defaults.points_subset;
     this.texture = texture;
     this.stats = stats;
+    this.onVibeChange = onVibeChange;
     this.initOrbit();
     this.init(canvas);
     this.animate();
@@ -197,7 +210,9 @@ export default class Hopalong {
           transparent: false,
         });
 
-        materials.color.setHSL(...hsvToHsl(this.hueValues[s], defaults.saturation, defaults.brightness));
+        materials.color.setHSL(
+          ...hsvToHsl(this.hueValues[s], defaults.saturation, defaults.brightness)
+        );
 
         const particles = new Points(geometry, materials);
         particles.position.x = 0;
@@ -317,7 +332,7 @@ export default class Hopalong {
 
     this.prepareOrbit();
 
-    const { a, b, c, d, e } = this.orbitParams;
+    const { a, b, c, d, e, choice, xPreset, yPreset } = this.orbitParams;
     // Using local vars should be faster
     const al = a;
     const bl = b;
@@ -332,12 +347,11 @@ export default class Hopalong {
       xMax = 0,
       yMin = 0,
       yMax = 0;
-    const choice = Math.random();
 
     for (let s = 0; s < this.numSubsets; s++) {
       // Use a different starting point for each orbit subset
-      x = s * 0.005 * (0.5 - Math.random());
-      y = s * 0.005 * (0.5 - Math.random());
+      x = s * 0.005 * (0.5 - xPreset * (Math.random() / 2));
+      y = s * 0.005 * (0.5 - yPreset * (Math.random() / 2));
 
       const curSubset = subsets[s];
 
@@ -408,14 +422,18 @@ export default class Hopalong {
 
   shuffleParams() {
     const { a, b, c, d, e } = constraints;
-
     this.orbitParams = {
       a: a.min + Math.random() * (a.max - a.min),
       b: b.min + Math.random() * (b.max - b.min),
       c: c.min + Math.random() * (c.max - c.min),
       d: d.min + Math.random() * (d.max - d.min),
       e: e.min + Math.random() * (e.max - e.min),
+      choice: Math.random(),
+      xPreset: Math.random(),
+      yPreset: Math.random(),
+
     };
+    this.onVibeChange(this.orbitParams);
   }
 
   ///////////////////////////////////////////////
