@@ -6,10 +6,10 @@ import '@/main.css';
 import { debounce, pick } from 'lodash';
 import Stats from 'stats.js';
 import { TextureLoader } from 'three';
-import App from '@/components/App';
+import App, { Rating } from '@/components/App';
 import Hopalong from '@/hopalong';
 import textureUrl from '@/images/amoongus.png';
-import { AdvancedSettings, Settings } from '@/types/hopalong';
+import { AdvancedSettings, OrbitParams, Settings } from '@/types/hopalong';
 import Detector from '@/util/Detector';
 import defaults from '@/util/defaults';
 
@@ -30,7 +30,6 @@ class Program {
     autoBind(this);
     this.createHopalong();
   }
-
   createHopalong(advancedSettings: Partial<AdvancedSettings> = {}) {
     if (this.hopalong) {
       this.hopalong.destroy();
