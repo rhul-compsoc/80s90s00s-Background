@@ -9,6 +9,7 @@ export type OrbitParams<T> = {
   choice: T;
   xPreset: T;
   yPreset: T;
+  timeCreated?: T;
 };
 export type Orbit<T> = {
   subsets: SubsetPoint[][];
