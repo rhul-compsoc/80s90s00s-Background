@@ -90,7 +90,7 @@ export default class Hopalong {
   getCurrentOrbitParams() {
     const latest = this.particleSets.sort((a, b) => {
       if (!a.params.timeCreated || !b.params.timeCreated) {
-        return this.orbitParams;
+        return -1;
       }
       return a.params.timeCreated < b.params.timeCreated ? 1 : -1;
     });
@@ -342,7 +342,6 @@ export default class Hopalong {
 
   generateOrbit() {
     let x, y, z, x1;
-    console.log('generating orbit', Math.random());
     this.prepareOrbit();
 
     const { a, b, c, d, e, choice, xPreset, yPreset } = this.orbitParams;
