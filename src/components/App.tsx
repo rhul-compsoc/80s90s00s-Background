@@ -3,14 +3,14 @@ import ReactPlayer from 'react-player/youtube';
 import { throttle } from 'lodash';
 import { motion } from 'framer-motion';
 import styled from 'styled-components';
-import { OnSettingsChange, Settings } from '@/types/hopalong';
+import { OnSettingsChange, OrbitParams, Settings } from '@/types/hopalong';
 import Menu from './Menu';
 import Toolbar from './Toolbar';
 import WebGLStats from './WebGLStats';
 
 export type Rating = {
   rating: number;
-  numbers: number[];
+  params: OrbitParams<number>;
 };
 
 export const RatingContext = createContext({
@@ -58,10 +58,12 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
   const addRating = (rating: number) => {
     const newRatings = ratings;
     newRatings.push({
-      rating: rating,
-      numbers: [0, 0, 0],
+      rating: rating,//@ts-ignore
+      params: window.hopalong.getCurrentOrbitParams(),
     } as Rating);
     setRatings(newRatings);
+    // @ts-ignore
+    window.ratings = newRatings;
   };
 
   const { mouseLocked, isPlaying, ...menuSettings } = settings;
