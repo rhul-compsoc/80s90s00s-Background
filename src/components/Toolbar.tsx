@@ -15,7 +15,7 @@ import styled from 'styled-components';
 import { IconButton } from './common/Button';
 import { classes } from '@/styles/utils';
 import { useForceUpdate } from '@/util/hooks';
-import { Rating, RatingContext } from '@/components/App';
+import { RatingContext } from '@/components/App';
 
 type PropsType = {
   menuOpen: boolean;
@@ -52,16 +52,16 @@ export default function Toolbar({
     }
   };
 
-  const ratingGiven = (rating: number) => {
-    ratingContext.addRating(rating);
-  };
-
   return (
     <nav>
       <NavList>
         <ListItem>
           {[...Array(10).keys()].map((i) => (
-            <IconButton className="w-64 bg-white" key={i} onClick={() => ratingGiven(i)}>
+            <IconButton
+              className="w-64 bg-white"
+              key={i}
+              onClick={() => ratingContext.addRating(i)}
+            >
               {i}
             </IconButton>
           ))}
