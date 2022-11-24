@@ -16,6 +16,8 @@
     "noUnusedLocals": true,
     "allowSyntheticDefaultImports": true,
     "skipLibCheck": true,
+    "resolveJsonModule": true,
+    "esModuleInterop": true, 
     "baseUrl": ".",
     "paths": {
       "@/*": ["src/*"]
