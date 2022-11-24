@@ -3,6 +3,7 @@
  * Updated by Sam Leatherdale
  */
 import autoBind from 'auto-bind';
+import best_frames from '@/util/best_frames.json';
 import {
   AdditiveBlending,
   FogExp2,
@@ -97,11 +98,13 @@ export default class Hopalong {
     return latest[latest.length - 1].params;
   }
 
+  currentFrame = 0;
   texture: Texture;
   camera: PerspectiveCamera;
   scene: Scene;
   renderer: WebGLRenderer;
   stats: Stats;
+  vibeCheck: boolean;
   onSettingsUpdate: (settings: SimpleSettings) => unknown;
 
   hueValues: number[] = [];
@@ -145,6 +148,7 @@ export default class Hopalong {
     this.numPointsSubset = pointsPerSubset || defaults.points_subset;
     this.texture = texture;
     this.stats = stats;
+    this.vibeCheck = true;
     this.initOrbit();
     this.init(canvas);
     this.animate();
@@ -434,27 +438,22 @@ export default class Hopalong {
 
   shuffleParams() {
     const { a, b, c, d, e } = constraints;
-    this.orbitParams = {
-      a: -7.423649218839337,
-      b: 0.7838712995833943,
-      c: 6.5829663549683595,
-      d: 0.9984510510542877,
-      e: 1.7643029661649652,
-      choice: 0.6484083756051098,
-      xPreset: 0.3305241563671446,
-      yPreset: 0.36372397148440827,
-    };
-    this.orbitParams = {
-      a: a.min + Math.random() * (a.max - a.min),
-      b: b.min + Math.random() * (b.max - b.min),
-      c: c.min + Math.random() * (c.max - c.min),
-      d: d.min + Math.random() * (d.max - d.min),
-      e: e.min + Math.random() * (e.max - e.min),
-      choice: Math.random(),
-      xPreset: Math.random(),
-      yPreset: Math.random(),
-      timeCreated: Date.now(),
-    };
+    if (this.vibeCheck) {
+      // use the model to generate the next orbit
+      this.orbitParams = best_frames[this.currentFrame > best_frames.length ? this.currentFrame = 0 : this.currentFrame++].params;
+    } else {
+      this.orbitParams = {
+        a: a.min + Math.random() * (a.max - a.min),
+        b: b.min + Math.random() * (b.max - b.min),
+        c: c.min + Math.random() * (c.max - c.min),
+        d: d.min + Math.random() * (d.max - d.min),
+        e: e.min + Math.random() * (e.max - e.min),
+        choice: Math.random(),
+        xPreset: Math.random(),
+        yPreset: Math.random(),
+        timeCreated: Date.now(),
+      };
+    }
     this.orbitParamHistory.push(this.orbitParams);
   }
 
@@ -532,6 +531,7 @@ export default class Hopalong {
       rotationSpeed,
       mouseLocked,
       cameraFov: this.camera.fov,
+      vibeCheck: this.vibeCheck,
     };
   }
 
