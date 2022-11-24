@@ -45,6 +45,7 @@ export type SimpleMenuSettings = {
   speed: number;
   rotationSpeed: number;
   cameraFov: number;
+  vibeCheck?: boolean;
 };
 export type SimpleSettings = SimpleMenuSettings & ToolbarSettings;
 /** Settings that require recreating the simulation */
