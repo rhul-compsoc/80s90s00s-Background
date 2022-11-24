@@ -436,11 +436,18 @@ export default class Hopalong {
     this.orbit.yMax = 0;
   }
 
+  /**
+   * TODO: This is a bit of a hack to get the orbitParams to change
+   * The JSON list needs to go and the orbits should be generated on the fly
+   */
   shuffleParams() {
     const { a, b, c, d, e } = constraints;
     if (this.vibeCheck) {
       // use the model to generate the next orbit
-      this.orbitParams = best_frames[this.currentFrame > best_frames.length ? this.currentFrame = 0 : this.currentFrame++].params;
+      this.orbitParams =
+        best_frames[
+          this.currentFrame > best_frames.length ? (this.currentFrame = 0) : this.currentFrame++
+        ].params;
     } else {
       this.orbitParams = {
         a: a.min + Math.random() * (a.max - a.min),
