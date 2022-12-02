@@ -20,3 +20,8 @@ input {
 a {
     color:#ffffaa;
 }
+
+.compsocLogo {
+  filter: drop-shadow(0px 0px 3px rgb(255 255 255 / 0.4)), drop-shadow(0px 0px 3px rgb(255 255 255 / 0.4));
+  stroke: black;
+}

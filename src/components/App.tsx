@@ -7,6 +7,7 @@ import { OnSettingsChange, OrbitParams, Settings } from '@/types/hopalong';
 import Menu from './Menu';
 import Toolbar from './Toolbar';
 import WebGLStats from './WebGLStats';
+import Overlay from './Overlay';
 
 export type Rating = {
   rating: number;
@@ -40,7 +41,7 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
     window.clearTimeout(hideTimeout);
     setToolbarTimeout();
   }, 250);
-  const hideToolbar = () => updateToolbarVisible(true);
+  const hideToolbar = () => updateToolbarVisible(false);
   const setToolbarTimeout = () => {
     hideTimeout = window.setTimeout(hideToolbar, 2000);
   };
@@ -103,6 +104,7 @@ export default function App({ stats, settings, onSettingsChange, onCenter, onRes
       <StatsBg open={statsOpen}>
         <WebGLStats stats={stats} />
       </StatsBg>
+      <Overlay />
     </RatingContext.Provider>
   );
 }
